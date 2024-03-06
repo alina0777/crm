@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CardForm">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/space1"
+                android:text="Заполните анкету"
+                android:textSize="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"/>
+
+        <LinearLayout
+            android:id="@+id/space2"
+            android:weightSum="100"
+            android:orientation="horizontal"
+            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:background="@color/yelow"
+            android:layout_below="@+id/space1">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonEnterFormLater"
+
+                android:layout_weight="50"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Отложить" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonFinishForm"
+
+                android:layout_weight="50"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Завершить" />
+        </LinearLayout>
+
+            <TextView
+                android:id="@+id/space3"
+                android:text="Название ТРТ:"
+                android:textSize="30dp"
+                android:textColor="@color/red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/space2"/>
+
+            <EditText
+                android:id="@+id/space4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/space3"
+                android:background="@color/red50"
+                android:textColor="@color/red"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/space5"
+                android:text="Адрес ТРТ:"
+                android:textSize="30dp"
+                android:textColor="@color/red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/space4"/>
+
+            <EditText
+                android:id="@+id/space6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/space5"
+                android:background="@color/red50"
+                android:textColor="@color/red"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/space7"
+                android:text="Комментарий:"
+                android:textSize="30dp"
+                android:textColor="@color/red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/space6"/>
+
+            <EditText
+                android:id="@+id/space8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/space7"
+                android:background="@color/red50"
+                android:textColor="@color/red"
+                android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/space9"
+                android:text="Сделать фото:"
+                android:textSize="30dp"
+                android:textColor="@color/red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/space8"/>
+
+
+            <LinearLayout
+                android:id="@+id/space10"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                android:layout_height="60dp"
+                android:layout_width="match_parent"
+                android:background="@color/yelow"
+                android:layout_below="@+id/space9">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonTakePhoto"
+
+                    android:layout_weight="50"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Камера" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/buttonShowPhoto"
+
+                    android:layout_weight="50"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Просмотр" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/space11"
+                android:layout_below="@+id/space10"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:text="Дата создания анкеты:"/>
+
+            <TextView
+                android:id="@+id/textDateCreate"
+                android:layout_below="@+id/space11"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:text="01.01.01"/>
+
+            <TextView
+                android:id="@+id/space14"
+                android:layout_below="@+id/textDateCreate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:text="Гео создания анкеты:"/>
+
+            <TextView
+                android:id="@+id/textGeoCreate"
+                android:clickable="true"
+
+                android:layout_below="@+id/space14"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:text="000000000.00000000000"/>
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
