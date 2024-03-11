@@ -5,13 +5,18 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
+
+import com.alinakravckenkodev.crm.MainActivity;
+import com.alinakravckenkodev.crm.objects.Form;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MainDbHelper extends SQLiteOpenHelper {
-
     public static final String DATABASE_NAME = "main01.db";
-    private static final int DATABASE_VERSION = 1;
-
+    private static final int DATABASE_VERSION = 56;
     public static MainDbHelper mDbHelper;
 
     public MainDbHelper(Context context) {
@@ -19,15 +24,15 @@ public class MainDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate (SQLiteDatabase db) {
 
         String SQL_CREATE_DOCS_TABLE = "CREATE TABLE " + Main.CustomerForms.TABLE_NAME +
                 " ("+ Main.CustomerForms._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + Main.CustomerForms.full_name + " TEXT NOT NULL, "
-                + Main.CustomerForms.date_create + " TEXT NOT NULL, "
-                + Main.CustomerForms.date_finish + " TEXT NOT NULL, "
+                + Main.CustomerForms.comment + " TEXT, "
+                + Main.CustomerForms.date_create + " INTEGER NOT NULL, "
+                + Main.CustomerForms.date_finish + " INTEGER, "
                 + Main.CustomerForms.geo_create + " TEXT NOT NULL, "
-                + Main.CustomerForms.geo_finish + " TEXT NOT NULL, "
+                + Main.CustomerForms.geo_finish + " TEXT, "
                 + Main.CustomerForms.tsa_name + " TEXT NOT NULL, "
                 + Main.CustomerForms.tsa_address + " TEXT NOT NULL, "
                 + Main.CustomerForms.photo_base64 + " TEXT NOT NULL);";
@@ -37,24 +42,43 @@ public class MainDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+         if (oldVersion < newVersion) {
+
+
+            String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + Main.CustomerForms.TABLE_NAME;
+            db.execSQL(SQL_DROP_TABLE);
+
+
+            String SQL_CREATE_DOCS_TABLE = "CREATE TABLE " + Main.CustomerForms.TABLE_NAME +
+                    " ("+ Main.CustomerForms._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + Main.CustomerForms.comment + " TEXT, "
+                    + Main.CustomerForms.date_create + " INTEGER NOT NULL, "
+                    + Main.CustomerForms.date_finish + " INTEGER, "
+                    + Main.CustomerForms.geo_create + " TEXT NOT NULL, "
+                    + Main.CustomerForms.geo_finish + " TEXT, "
+                    + Main.CustomerForms.tsa_name + " TEXT NOT NULL, "
+                    + Main.CustomerForms.tsa_address + " TEXT NOT NULL, "
+                    + Main.CustomerForms.photo_base64 + " TEXT NOT NULL);";
+
+            db.execSQL(SQL_CREATE_DOCS_TABLE);
+        }
+
 
     }
 
-
-    public static void addFormInBase(SQLiteDatabase db,
-                                        String full_name,
-                                        String date_create,
-                                        String date_finish,
+    public static int addFormInBase(   SQLiteDatabase database,
+                                        long date_create,
+                                        long date_finish,
                                         String geo_create,
                                         String geo_finish,
                                         String tsa_name,
                                         String tsa_address,
-                                        String photo_base64) {
+                                        String photo_base64,
+                                        String comment) {
 
         long unixTime = System.currentTimeMillis() / 1000L;
 
         ContentValues values = new ContentValues();
-        values.put(Main.CustomerForms.full_name, full_name);
         values.put(Main.CustomerForms.date_create, date_create);
         values.put(Main.CustomerForms.date_finish, date_finish);
         values.put(Main.CustomerForms.geo_create, geo_create);
@@ -62,47 +86,194 @@ public class MainDbHelper extends SQLiteOpenHelper {
         values.put(Main.CustomerForms.tsa_name, tsa_name);
         values.put(Main.CustomerForms.tsa_address, tsa_address);
         values.put(Main.CustomerForms.photo_base64, photo_base64);
+        values.put(Main.CustomerForms.comment, comment);
 
-
-        long newRowId = db.insert(Main.CustomerForms.TABLE_NAME, null, values);
-
+        return (int) database.insert (Main.CustomerForms.TABLE_NAME, null, values);
     }
 
-//    public static Boolean changeDataAirplane(SQLiteDatabase db,
-//                                             String _ID,
-//                                             String new_name,
-//                                             String new_year,
-//                                             String new_message,
-//                                             String bitmap_string_image){
-//        try {
-//            System.out.println("changeDataAirplane____start");
-//
-//
-//            ContentValues values = new ContentValues();
-//            values.put(Main.AirplanesBase.name, String.valueOf(new_name));
-//            values.put(Main.AirplanesBase.year, String.valueOf(new_year));
-//            values.put(Main.AirplanesBase.message, String.valueOf(new_message));
-//            values.put(Main.AirplanesBase.bitmap_string_image, String.valueOf(bitmap_string_image));
-//
-//            db.update(Main.AirplanesBase.TABLE_NAME, values,
-//                    "_ID=?",
-//                    new String[]{
-//                            _ID
-//                    });
-//
-//            return true;
-//
-//        }   catch (Error error){
-//            return false;
-//        }
-//    }
+
+    public  static  void updateTextDataByID(int ID, String COLUMN_NAME, String value) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, value);
+
+        MainActivity.database.update(Main.CustomerForms.TABLE_NAME,
+                values,
+                "_id=?",
+                new String[] { String.valueOf(ID)});
+    }
+
+    public static ArrayList <Form> getListForms (SQLiteDatabase db) {
+        ArrayList<Form> arrayForms = new ArrayList<>();
+
+        String[] projection = {
+                Main.CustomerForms._ID,
+                Main.CustomerForms.comment,
+                Main.CustomerForms.date_create,
+                Main.CustomerForms.date_finish,
+                Main.CustomerForms.geo_create,
+                Main.CustomerForms.geo_finish,
+                Main.CustomerForms.tsa_name,
+                Main.CustomerForms.tsa_address,
+                Main.CustomerForms.photo_base64
+        };
+
+        Cursor cursor = db.query (
+                Main.CustomerForms.TABLE_NAME,                           // таблица
+                projection,                                     // столбцы
+                "",                               // столбцы для условия WHERE full_name>?
+                null,                             // значения для условия WHERE new String[]{String.valueOf(timeFrom)}
+                null,                             // Don't group the rows
+                null,                             // Don't filter by row groups
+                null);                            // порядок сортировки
 
 
-    public static SQLiteDatabase getDatabase(Context context) {
+        int idColumnIndex_ID = cursor.getColumnIndex(Main.CustomerForms._ID);
+        int idColumnIndex_date_create = cursor.getColumnIndex(Main.CustomerForms.date_create);
+        int idColumnIndex_date_finish = cursor.getColumnIndex(Main.CustomerForms.date_finish);
+        int idColumnIndex_geo_create = cursor.getColumnIndex(Main.CustomerForms.geo_create);
+        int idColumnIndex_geo_finish = cursor.getColumnIndex(Main.CustomerForms.geo_finish);
+        int idColumnIndex_tsa_name = cursor.getColumnIndex(Main.CustomerForms.tsa_name);
+        int idColumnIndex_tsa_address = cursor.getColumnIndex(Main.CustomerForms.tsa_address);
+        int idColumnIndex_photo_base64 = cursor.getColumnIndex(Main.CustomerForms.photo_base64);
+        int idColumnIndex_comment = cursor.getColumnIndex(Main.CustomerForms.comment);
 
+        while (cursor.moveToNext()) {
+
+            int _id = cursor.getInt (idColumnIndex_ID);
+            long _date_create = cursor.getLong(idColumnIndex_date_create);
+            long _date_finish = cursor.getLong(idColumnIndex_date_finish);
+
+            String _geo_create = cursor.getString(idColumnIndex_geo_create);
+            String _geo_finish = cursor.getString(idColumnIndex_geo_finish);
+            String _tsa_name = cursor.getString(idColumnIndex_tsa_name);
+            String _tsa_address = cursor.getString(idColumnIndex_tsa_address);
+            String _photo_base64 = cursor.getString(idColumnIndex_photo_base64);
+            String _comment = cursor.getString(idColumnIndex_comment);
+
+
+            Form objForm = new Form ();
+            objForm.setID(_id);
+            objForm.setDate_create(_date_create);
+            objForm.setDate_finish(_date_finish);
+            objForm.setGeo_Create(_geo_create);
+            objForm.setGeo_finish(_geo_finish);
+            objForm.setTsa_name(_tsa_name);
+            objForm.setTsa_address(_tsa_address);
+            objForm.setPhoto_base64(_photo_base64);
+            objForm.setComment(_comment);
+
+
+            arrayForms.add(objForm);
+        }
+        return arrayForms;
+    }
+
+
+    public static void initForm (Form form) {
+        if (form.getID() == 0) {
+            int ID = MainDbHelper.addFormInBase(MainActivity.database,
+                    0,
+                    0,
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "");
+
+            form.setID(ID);
+        }
+
+
+        String[] projection = {
+                Main.CustomerForms._ID,
+                Main.CustomerForms.comment,
+                Main.CustomerForms.date_create,
+                Main.CustomerForms.date_finish,
+                Main.CustomerForms.geo_create,
+                Main.CustomerForms.geo_finish,
+                Main.CustomerForms.tsa_name,
+                Main.CustomerForms.tsa_address,
+                Main.CustomerForms.photo_base64
+        };
+//
+        Cursor cursor = MainActivity.database.query (
+                Main.CustomerForms.TABLE_NAME,                           // таблица
+                projection,                                     // столбцы
+                "_id=?",                               // столбцы для условия WHERE full_name>?
+                new String[]{String.valueOf(form.getID())},      // значения для условия WHERE new String[]{String.valueOf(timeFrom)}
+                null,                             // Don't group the rows
+                null,                             // Don't filter by row groups
+                null);                            // порядок сортировки
+
+        int idColumnIndex_date_create = cursor.getColumnIndex(Main.CustomerForms.date_create);
+        int idColumnIndex_date_finish = cursor.getColumnIndex(Main.CustomerForms.date_finish);
+        int idColumnIndex_geo_create = cursor.getColumnIndex(Main.CustomerForms.geo_create);
+        int idColumnIndex_geo_finish = cursor.getColumnIndex(Main.CustomerForms.geo_finish);
+        int idColumnIndex_tsa_name = cursor.getColumnIndex(Main.CustomerForms.tsa_name);
+        int idColumnIndex_tsa_address = cursor.getColumnIndex(Main.CustomerForms.tsa_address);
+        int idColumnIndex_photo_base64 = cursor.getColumnIndex(Main.CustomerForms.photo_base64);
+        int idColumnIndex_comment = cursor.getColumnIndex(Main.CustomerForms.comment);
+
+        cursor.moveToFirst();
+
+        long _date_create = cursor.getLong(idColumnIndex_date_create);
+        long _date_finish = cursor.getLong(idColumnIndex_date_finish);
+
+        String _geo_create = cursor.getString(idColumnIndex_geo_create);
+        String _geo_finish = cursor.getString(idColumnIndex_geo_finish);
+        String _tsa_name = cursor.getString(idColumnIndex_tsa_name);
+        String _tsa_address = cursor.getString(idColumnIndex_tsa_address);
+        String _photo_base64 = cursor.getString(idColumnIndex_photo_base64);
+        String _comment = cursor.getString(idColumnIndex_comment);
+
+
+        form.setDate_create(_date_create);
+        form.setDate_finish(_date_finish);
+        form.setGeo_Create(_geo_create);
+        form.setGeo_finish(_geo_finish);
+        form.setTsa_name(_tsa_name);
+        form.setTsa_address(_tsa_address);
+        form.setPhoto_base64(_photo_base64);
+        form.setComment(_comment);
+    }
+
+
+    public static String getStringByID (int ID, String COLUMN_NAME) {
+        String[] projection = {
+                Main.CustomerForms._ID,
+                Main.CustomerForms.comment,
+                Main.CustomerForms.date_create,
+                Main.CustomerForms.date_finish,
+                Main.CustomerForms.geo_create,
+                Main.CustomerForms.geo_finish,
+                Main.CustomerForms.tsa_name,
+                Main.CustomerForms.tsa_address,
+                Main.CustomerForms.photo_base64
+        };
+
+        Cursor cursor = MainActivity.database.query (
+                Main.CustomerForms.TABLE_NAME,                           // таблица
+                projection,                                     // столбцы
+                "_id=?",                               // столбцы для условия WHERE full_name>?
+                new String[]{String.valueOf(ID)},      // значения для условия WHERE new String[]{String.valueOf(timeFrom)}
+                null,                             // Don't group the rows
+                null,                             // Don't filter by row groups
+                null);                            // порядок сортировки
+
+
+        int idColumnIndex = cursor.getColumnIndex(COLUMN_NAME);
+        cursor.moveToFirst();
+
+        String response = cursor.getString(idColumnIndex);
+        return response;
+    }
+
+
+
+    public static SQLiteDatabase getDatabase (Context context) {
             mDbHelper = new MainDbHelper(context);
             SQLiteDatabase  vDb = mDbHelper.getWritableDatabase();
-
         return vDb;
     }
 

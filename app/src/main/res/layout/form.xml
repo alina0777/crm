@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CardForm">
+    android:background="@color/white"
+    tools:context=".MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,8 +18,8 @@
             android:background="@color/white">
 
             <TextView
-                android:id="@+id/space1"
-                android:text="Заполните анкету"
+                android:id="@+id/numberForm"
+                android:text="Анкета #000"
                 android:textSize="40dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -31,10 +32,10 @@
             android:layout_height="60dp"
             android:layout_width="match_parent"
             android:background="@color/yelow"
-            android:layout_below="@+id/space1">
+            android:layout_below="@+id/numberForm">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonEnterFormLater"
+                android:id="@+id/buttonFinishLater"
 
                 android:layout_weight="50"
                 android:layout_width="wrap_content"
@@ -42,7 +43,7 @@
                 android:text="Отложить" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buttonFinishForm"
+                android:id="@+id/buttonFinish"
 
                 android:layout_weight="50"
                 android:layout_width="wrap_content"
@@ -51,7 +52,7 @@
         </LinearLayout>
 
             <TextView
-                android:id="@+id/space3"
+                android:id="@+id/nameTSA_text"
                 android:text="Название ТРТ:"
                 android:textSize="30dp"
                 android:textColor="@color/red"
@@ -60,49 +61,48 @@
                 android:layout_below="@+id/space2"/>
 
             <EditText
-                android:id="@+id/space4"
+                android:id="@+id/nameTSA_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:layout_below="@+id/space3"
+                android:layout_below="@+id/nameTSA_text"
                 android:background="@color/red50"
                 android:textColor="@color/red"
                 android:textSize="30dp" />
 
             <TextView
-                android:id="@+id/space5"
+                android:id="@+id/address_tsa_text"
                 android:text="Адрес ТРТ:"
                 android:textSize="30dp"
                 android:textColor="@color/red"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/space4"/>
+                android:layout_below="@+id/nameTSA_edit"/>
 
             <EditText
-                android:id="@+id/space6"
+                android:id="@+id/address_tsa_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_below="@+id/space5"
+                android:layout_below="@+id/address_tsa_text"
                 android:background="@color/red50"
                 android:textColor="@color/red"
                 android:textSize="30dp" />
 
             <TextView
-                android:id="@+id/space7"
+                android:id="@+id/comment_text"
                 android:text="Комментарий:"
                 android:textSize="30dp"
                 android:textColor="@color/red"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/space6"/>
+                android:layout_below="@+id/address_tsa_edit"/>
 
             <EditText
-                android:id="@+id/space8"
+                android:id="@+id/comment_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_below="@+id/space7"
+                android:layout_below="@+id/comment_text"
                 android:background="@color/red50"
                 android:textColor="@color/red"
                 android:textSize="30dp" />
@@ -114,7 +114,7 @@
                 android:textColor="@color/red"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/space8"/>
+                android:layout_below="@+id/comment_edit"/>
 
 
             <LinearLayout
@@ -176,6 +176,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="15dp"
+                android:text="000000000.00000000000"/>
+
+            <TextView
+                android:id="@+id/spase16"
+                android:clickable="true"
+
+                android:layout_below="@+id/textGeoCreate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:text="Дата закрытия анкеты:"/>
+
+            <TextView
+                android:id="@+id/textDateFinish"
+                android:clickable="true"
+
+                android:layout_below="@+id/spase16"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:textColor="@color/red"
+                android:text="01.01.01"/>
+
+            <TextView
+                android:id="@+id/spase18"
+                android:clickable="true"
+
+                android:layout_below="@+id/textDateFinish"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:text="Гео при завершении:"/>
+
+            <TextView
+                android:id="@+id/textGeoFinish"
+                android:clickable="true"
+
+                android:layout_below="@+id/spase18"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15dp"
+                android:textColor="@color/red"
                 android:text="000000000.00000000000"/>
 
 
