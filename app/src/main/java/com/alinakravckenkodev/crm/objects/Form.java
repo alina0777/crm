@@ -1,11 +1,12 @@
 package com.alinakravckenkodev.crm.objects;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,29 +23,22 @@ import com.alinakravckenkodev.crm.MainActivity;
 import com.alinakravckenkodev.crm.R;
 import com.alinakravckenkodev.crm.Services;
 import com.alinakravckenkodev.crm.data.Main;
+import com.alinakravckenkodev.crm.data.MainDbHelper;
 import com.alinakravckenkodev.crm.dialogs.ChangeGeoStartFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class Form {
-    PopupWindow popupWindow = null;
+    public PopupWindow popupWindow;
 
-    LayoutInflater inflater;
-    View mainView;
 
     int ID = 0;
 
@@ -54,7 +48,7 @@ public class Form {
     String geo_finish = "";
     String tsa_name = "";
     String tsa_address = "";
-    String photo_base64 = "";
+    byte[] photoByteArray = null;
     String comment = "";
 
     AppCompatActivity activity;
@@ -69,21 +63,18 @@ public class Form {
     TextView geoCreate_text;
     TextView geoFinish_text;
     TextView dateFinish_text;
-
-
     Button latter_button;
     Button finish_button;
+    Button takePhoto;
+    Button showPhoto;
 
+    public Photo photoManager = null;
 
-
-
-    public void CreateWindow (AppCompatActivity activity) {
+    public void createWindow (AppCompatActivity activity) {
         this.activity = activity;
 
-        inflater = this.activity.getLayoutInflater();
-
-
-        mainView = inflater.inflate(R.layout.form, null);
+        LayoutInflater inflater = this.activity.getLayoutInflater();
+        View mainView = inflater.inflate(R.layout.form, null);
 
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -94,9 +85,27 @@ public class Form {
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
+                System.out.println("Form_dismiss_111");
+
                 setTsa_name(nameTSA_Edit.getText().toString());
                 setTsa_address(addressTSA_Edit.getText().toString());
                 setComment(comment_Edit.getText().toString());
+
+                if (photoManager.photoURI!=null) {
+                    try {
+                        Bitmap theImage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), photoManager.photoURI);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        theImage.compress(Bitmap.CompressFormat.JPEG, 25, stream);
+
+                        byte[] byteArrayFile = stream.toByteArray();
+
+                        setPhoto_file(byteArrayFile);
+
+                        System.out.println("byteArrayFile.length = "+byteArrayFile.length);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 
                 saveFormInDatabase();
 
@@ -140,6 +149,7 @@ public class Form {
         latter_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 popupWindow.dismiss();
             }
         });
@@ -169,8 +179,26 @@ public class Form {
             }
         });
 
+        takePhoto = mainView.findViewById(R.id.buttonTakePhoto);
+
+        takePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photoManager.takePhoto();
+            }
+        });
+
+        showPhoto = mainView.findViewById(R.id.buttonShowPhoto);
+        showPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photoManager.createWindow();
+            }
+        });
 
         update();
+
+        photoManager = new Photo (Form.this);
     }
 
     public void setID (int ID) {
@@ -205,8 +233,11 @@ public class Form {
         this.tsa_address = tsa_address;
     }
 
-    public void setPhoto_base64(String photo_base64) {
-        this.photo_base64 = photo_base64;
+    public void setPhoto_file(byte[] photo_file) {
+        System.out.println("setPhoto_file");
+        System.out.println("photo_file = " +String.valueOf(photo_file));
+
+        this.photoByteArray = photo_file;
     }
 
 
@@ -242,15 +273,21 @@ public class Form {
         return this.tsa_address;
     }
 
-    public String getPhoto_base64() {
-        return this.photo_base64;
+    public byte[] getPhoto_file() {
+        return this.photoByteArray;
     }
 
 
     public AppCompatActivity getActivity() {
         return activity;
     }
+
     public void saveFormInDatabase() {
+        System.out.println("saveFormInDatabase");
+        System.out.println("ID = " + ID);
+        System.out.println("this.photoByteArray = " + String.valueOf(this.photoByteArray));
+
+
         ContentValues values = new ContentValues();
 
         values.put(Main.CustomerForms.date_create, this.date_create);
@@ -261,13 +298,18 @@ public class Form {
         values.put(Main.CustomerForms.geo_finish, this.geo_finish);
         values.put (Main.CustomerForms.tsa_name, this.tsa_name);
         values.put (Main.CustomerForms.tsa_address, this.tsa_address);
-        values.put (Main.CustomerForms.photo_base64,this.photo_base64);
+
+        values.put (Main.CustomerForms.photo, this.photoByteArray);
+
         values.put (Main.CustomerForms.comment, this.comment);
 
         MainActivity.database.update(Main.CustomerForms.TABLE_NAME,
             values,
             "_id=?",
             new String[] { String.valueOf(ID) });
+
+
+        MainDbHelper.getPhotoForm(ID);
     }
 
 
@@ -289,6 +331,9 @@ public class Form {
 
         if (!geo_finish.equals(""))
             geoFinish_text.setText(geo_finish);
+
+
+
     }
 
     public void enterGeoData () {
@@ -321,6 +366,11 @@ public class Form {
             }
         });
     }
+
+
+
+
+
 }
 
 

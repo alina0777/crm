@@ -120,7 +120,7 @@ public class WindowMap {
 
     public void CreateWindow(AppCompatActivity activity) {
         this.activity = activity;
-        ArrayList<Form> listForms = MainDbHelper.getListForms(MainActivity.database);
+        ArrayList<Form> listForms = MainDbHelper.getListForms();
 
         Map map = new Map(listForms);
 

@@ -48,7 +48,7 @@ public class CardForm extends AppCompatActivity {
                         "",
                         "",
                         "",
-                        "",
+                        null,
                         "");
             } else {
                 ID = extras.getInt("ID");

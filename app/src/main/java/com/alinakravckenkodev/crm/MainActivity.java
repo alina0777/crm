@@ -1,32 +1,22 @@
 package com.alinakravckenkodev.crm;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alinakravckenkodev.crm.data.MainDbHelper;
 import com.alinakravckenkodev.crm.objects.Form;
 import com.alinakravckenkodev.crm.objects.WindowMap;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.DateFormat;
@@ -41,7 +31,17 @@ public class MainActivity extends AppCompatActivity {
     public static SQLiteDatabase database;
     public static FusedLocationProviderClient fusedLocationProviderClient;
 
+    public static Form form = null;
+
     ArrayList<String> marks_gps = new ArrayList<>();
+
+
+    public static class ListDataForm {
+        public int ID;
+        public String name;
+        public long date_create;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,11 +67,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Form newForm = new Form();
-                MainDbHelper.initForm(newForm);
-                newForm.setDate_create(new Date().getTime());
-                newForm.CreateWindow(MainActivity.this);
-                newForm.enterGeoData();
+                form = new Form();
+                MainDbHelper.initForm(form);
+                form.setDate_create(new Date().getTime());
+                form.createWindow(MainActivity.this);
+                form.enterGeoData();
 
             }
         });
@@ -130,12 +130,12 @@ public class MainActivity extends AppCompatActivity {
 
         tableList.addView(rowHead);
 
-        ArrayList<Form> listForms = MainDbHelper.getListForms(database);
+        ArrayList<MainActivity.ListDataForm> listDataForms = MainDbHelper.getListDataForms();
 
         TableRow.LayoutParams param = new TableRow.LayoutParams();
         param.weight = 50;
 
-        for (int i = 0; i < listForms.size(); i++) {
+        for (int i = 0; i < listDataForms.size(); i++) {
 
             TableRow row = new TableRow(context);
             row.setOrientation(TableRow.HORIZONTAL);
@@ -144,18 +144,20 @@ public class MainActivity extends AppCompatActivity {
             row.setBackgroundColor (activity.getResources().getColor(R.color.bisque));
 
             TextView tsa_name = new TextView(context);
-            int finalI = i;
+            int finalI1 = i;
             tsa_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Form form = new Form();
-                    form.setID(listForms.get(finalI).getID());
+
+                    form = new Form();
+                    form.setID(listDataForms.get(finalI1).ID);
                     MainDbHelper.initForm(form);
-                    form.CreateWindow(activity);
+
+                    form.createWindow(activity);
                 }
             });
 
-            tsa_name.setText(listForms.get(i).getID()  + " - " +listForms.get(i).getTsa_name());
+            tsa_name.setText(listDataForms.get(i).ID  + " - " +listDataForms.get(i).name);
             tsa_name.setTextSize(25);
             tsa_name.setLayoutParams(param);
             row.addView(tsa_name,0);
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
             DateFormat df = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
 
-            long timeStamp = listForms.get(i).getDate_create();
+            long timeStamp = listDataForms.get(i).date_create;
             String createTime = df.format(new Date (timeStamp));
 
             timeCreate.setText(createTime);
@@ -178,10 +180,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onRestart(){
-        super.onRestart();
-        recreate();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
     }
 
 

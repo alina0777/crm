@@ -16,7 +16,7 @@ public final class Main {
         public final static String geo_finish = "geo_finish";
         public final static String tsa_name = "tsa_name";
         public final static String tsa_address = "tsa_address";
-        public final static String photo_base64 = "photo_base64";
+        public final static String photo = "photo";
 
         public final static String comment = "comment";
 

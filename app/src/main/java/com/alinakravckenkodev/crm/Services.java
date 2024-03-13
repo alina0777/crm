@@ -3,7 +3,12 @@ package com.alinakravckenkodev.crm;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -14,6 +19,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,4 +46,14 @@ public class Services {
 
         return Float.valueOf(str.split(",")[1]);
     }
+
+    public static Bitmap getBitmapFromByteArray(byte[] byteArray) {
+        System.out.println("getBitmapFromByteArray...");
+        Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+        return bmp;
+
+    }
+
+
 }
