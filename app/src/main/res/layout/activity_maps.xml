@@ -6,12 +6,21 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapsActivity">
+    tools:context=".MainActivity">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonClaster"
+            android:text="Кластеризация"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_Plus"
@@ -34,7 +43,6 @@
                 android:layout_marginBottom="15dp"
                 android:src="@android:drawable/bottom_bar"
                 />
-
 
     </RelativeLayout>
 

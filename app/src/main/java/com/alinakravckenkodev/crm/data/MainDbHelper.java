@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class MainDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "main01.db";
-    private static final int DATABASE_VERSION = 77;
+    private static final int DATABASE_VERSION = 78;
     public static MainDbHelper mDbHelper;
 
     public MainDbHelper(Context context) {
@@ -133,12 +133,14 @@ public class MainDbHelper extends SQLiteOpenHelper {
 
         int idColumnIndex_ID = cursor.getColumnIndex(Main.CustomerForms._ID);
         int idColumnIndex_date_create = cursor.getColumnIndex(Main.CustomerForms.date_create);
+        int idColumnIndex_date_finish = cursor.getColumnIndex(Main.CustomerForms.date_finish);
         int idColumnIndex_tsa_name = cursor.getColumnIndex(Main.CustomerForms.tsa_name);
 
         while (cursor.moveToNext()) {
 
             int _id = cursor.getInt (idColumnIndex_ID);
             long _date_create = cursor.getLong(idColumnIndex_date_create);
+            long _date_finish = cursor.getLong(idColumnIndex_date_finish);
             String _tsa_name = cursor.getString(idColumnIndex_tsa_name);
 
 
@@ -146,6 +148,7 @@ public class MainDbHelper extends SQLiteOpenHelper {
             objForm.ID = _id;
             objForm.name = _tsa_name;
             objForm.date_create = _date_create;
+            objForm.date_finish = _date_finish;
 
             array.add(objForm);
         }

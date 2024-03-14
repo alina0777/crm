@@ -199,6 +199,16 @@ public class Form {
         update();
 
         photoManager = new Photo (Form.this);
+
+
+        if (this.date_finish!=0) {
+            nameTSA_Edit.setEnabled(false);
+            addressTSA_Edit.setEnabled(false);
+            comment_Edit.setEnabled(false);
+            takePhoto.setEnabled(false);
+            finish_button.setEnabled(false);
+
+        }
     }
 
     public void setID (int ID) {

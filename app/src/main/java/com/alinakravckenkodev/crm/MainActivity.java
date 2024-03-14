@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         public int ID;
         public String name;
         public long date_create;
+        public long date_finish;
     }
 
     @Override
@@ -141,7 +142,13 @@ public class MainActivity extends AppCompatActivity {
             row.setOrientation(TableRow.HORIZONTAL);
 
             row.setWeightSum(100);
-            row.setBackgroundColor (activity.getResources().getColor(R.color.bisque));
+
+            if (listDataForms.get(i).date_finish==0)
+            {
+                row.setBackgroundColor (activity.getResources().getColor(R.color.bisque));
+            } else {
+                row.setBackgroundColor (activity.getResources().getColor(R.color.red50));
+            }
 
             TextView tsa_name = new TextView(context);
             int finalI1 = i;
